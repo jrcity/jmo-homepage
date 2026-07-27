@@ -3,12 +3,161 @@
 @tailwind utilities;
 
 :root {
-  --font-display: system-ui, sans-serif;
-  --font-body: system-ui, sans-serif;
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-page: #FAF7FD;
+    --text-page: #1D0548;
+  }
+  .dark {
+    --bg-page: #1D0548;
+    --text-page: #FFFFFF;
+  }
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-page);
+    color: var(--text-page);
+    transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-page);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ==========================================================================
+     LIGHT MODE AUTOMATIC THEME ENGINE
+     Dynamically remaps hardcoded dark UI tokens across all pages to luxury light mode
+     ========================================================================== */
+  html:not(.dark) body {
+    background-color: #FAF7FD !important;
+    color: #1D0548 !important;
+  }
+
+  /* 1. Page & Section Backgrounds: Deep royal purple -> Soft Lilac Cream */
+  html:not(.dark) [class*="bg-[#1D0548]"],
+  html:not(.dark) [class*="bg-[#150336]"],
+  html:not(.dark) [class*="bg-[#2A0E52]"] {
+    background-color: #FAF7FD !important;
+  }
+
+  /* 2. Cards & Glass Surfaces: Rich violet -> Crisp White with Luxury Elevation Shadow */
+  html:not(.dark) [class*="bg-[#3E1A6E]"] {
+    background-color: #FFFFFF !important;
+    box-shadow: 0 12px 35px -8px rgba(29, 5, 72, 0.08), 0 4px 12px -4px rgba(29, 5, 72, 0.04) !important;
+  }
+
+  /* 3. Typography: Primary Titles (white) -> Deep Royal Purple (#1D0548) */
+  html:not(.dark) [class*="text-white"]:not(button):not(button *):not([class*="bg-gradient"]):not([class*="bg-gradient"] *):not([class*="from-"]):not([class*="from-"] *) {
+    color: #1D0548 !important;
+  }
+
+  /* 4. Typography: Secondary Paragraphs (#F5E1FA) -> Rich Grape (#4B2C70) */
+  html:not(.dark) [class*="text-[#F5E1FA]"] {
+    color: #4B2C70 !important;
+  }
+
+  /* 5. Typography: Accent Labels & Links (#DBA0F7) -> High-Contrast Violet (#7A22A1) */
+  html:not(.dark) [class*="text-[#DBA0F7]"] {
+    color: #7A22A1 !important;
+  }
+
+  /* 6. Borders: Dark Violet -> Delicate Lavender (#E2D4F5) */
+  html:not(.dark) [class*="border-[#6D508C]"],
+  html:not(.dark) [class*="border-[#DBA0F7]"] {
+    border-color: #E2D4F5 !important;
+  }
+
+  /* 7. Badges & Pills: Transform small dark badges into soft lilac pills */
+  html:not(.dark) span[class*="bg-[#1D0548]"],
+  html:not(.dark) span[class*="bg-[#3E1A6E]"],
+  html:not(.dark) div[class*="bg-[#1D0548]"].rounded-full,
+  html:not(.dark) div[class*="bg-[#3E1A6E]"].rounded-full {
+    background-color: #F2E8FA !important;
+    color: #6D1B91 !important;
+    border-color: #D4BEEB !important;
+  }
+
+  /* 8. Buttons & CTAs: Keep primary gradient buttons white-text, style secondary outlined buttons cleanly */
+  html:not(.dark) button,
+  html:not(.dark) button *,
+  html:not(.dark) [class*="bg-gradient"],
+  html:not(.dark) [class*="bg-gradient"] *,
+  html:not(.dark) [class*="from-"],
+  html:not(.dark) [class*="from-"] * {
+    color: #FFFFFF !important;
+  }
+
+  html:not(.dark) a[class*="border-[#6D508C]"],
+  html:not(.dark) button[class*="border-[#6D508C]"] {
+    background-color: #FFFFFF !important;
+    color: #1D0548 !important;
+    border-color: #915AD4 !important;
+    box-shadow: 0 4px 14px rgba(29, 5, 72, 0.08) !important;
+  }
+
+  html:not(.dark) a[class*="border-[#6D508C]"]:hover,
+  html:not(.dark) button[class*="border-[#6D508C]"]:hover {
+    background-color: #F2E8FA !important;
+    border-color: #6D1B91 !important;
+  }
+
+  /* 9. Header & Navigation: Clean translucent cream header in light mode */
+  html:not(.dark) header[class*="bg-[#1D0548]"] {
+    background-color: rgba(250, 247, 253, 0.88) !important;
+    border-bottom: 1px solid #E2D4F5 !important;
+    backdrop-filter: blur(16px) !important;
+  }
+
+  /* 10. Theme Toggle Button Specific Styling */
+  html:not(.dark) .theme-toggle-btn {
+    background-color: #FFFFFF !important;
+    border-color: #D4BEEB !important;
+    color: #6D1B91 !important;
+    box-shadow: 0 4px 12px rgba(29, 5, 72, 0.08) !important;
+  }
+  html:not(.dark) .theme-toggle-btn svg {
+    color: #6D1B91 !important;
+  }
+}
+
+/* Custom sleek scrollbar for dark-forward UI */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1D0548;
+}
+::-webkit-scrollbar-thumb {
+  background: #3E1A6E;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6D508C;
 }
 
 /* Visible keyboard focus - accessibility baseline, do not remove */
 :focus-visible {
   outline: 2px solid theme('colors.brand.primary');
   outline-offset: 2px;
+}
+
+/* Utility classes for glassmorphism and subtle glowing borders in dark mode */
+@layer utilities {
+  .glass-card {
+    background: rgba(62, 26, 110, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(219, 160, 247, 0.15);
+  }
+  .glass-nav {
+    background: rgba(29, 5, 72, 0.85);
+    backdrop-filter: blur(16px);
+  }
 }

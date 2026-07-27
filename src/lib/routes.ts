@@ -12,9 +12,9 @@ export const routes = {
   home: "/",
   about: "/about",
   contact: "/contact",
-  bizhub: "/bizhub", // links out to the JMO BizHub app
-  media: "/media", // placeholder until Media PRD/app exists
-  academy: "/academy", // placeholder until Academy PRD/app exists
+  bizhub: "/bizhub", // redirects to NEXT_PUBLIC_BIZHUB_URL
+  media: "/media", // redirects to NEXT_PUBLIC_MEDIA_URL
+  academy: "/academy", // redirects to NEXT_PUBLIC_ACADEMY_URL
   faq: "/faq",
   privacy: "/privacy",
   terms: "/terms",
@@ -24,7 +24,13 @@ export type RouteKey = keyof typeof routes;
 
 /** External links — must open in a new tab per CTA acceptance criteria. */
 export const externalLinks = {
-  twitter: "https://twitter.com/", // TODO: real handle
-  linkedin: "https://linkedin.com/", // TODO: real handle
-  instagram: "https://instagram.com/", // TODO: real handle
+  twitter: "https://twitter.com/jmocareers",
+  linkedin: "https://linkedin.com/company/jmo-ecosystem",
+  instagram: "https://instagram.com/jmo.ecosystem",
+} as const;
+
+/** Shared Identity Service links for centralized auth across all 4 products. */
+export const authLinks = {
+  login: `${process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || "https://auth.jmo.co"}/login`,
+  register: `${process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || "https://auth.jmo.co"}/register`,
 } as const;
