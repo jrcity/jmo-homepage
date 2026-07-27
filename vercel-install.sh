@@ -3,34 +3,30 @@ set -e
 
 # Create ssh directory and set up private keys from Vercel environment variables
 mkdir -p ~/.ssh
-echo "$GIT_SSH_KEY_UI_KIT" > ~/.ssh/key1
-echo "$GIT_SSH_KEY_TOKEN" > ~/.ssh/key2
+
+# Normalize key headers (in case there are spaces like '----- BEGIN OPENSSH PRIVATE KEY -----')
+echo "$GIT_SSH_KEY_UI_KIT" | sed 's/----- *BEGIN /-----BEGIN /g; s/----- *END /-----END /g; s/ *-----/-----/g' > ~/.ssh/key1
+echo "$GIT_SSH_KEY_TOKEN" | sed 's/----- *BEGIN /-----BEGIN /g; s/----- *END /-----END /g; s/ *-----/-----/g' > ~/.ssh/key2
 chmod 600 ~/.ssh/key1 ~/.ssh/key2
 
 # Add GitHub to known hosts
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null
 
-# Configure SSH Host aliases so each repo uses its own specific Deploy Key strictly
-cat << 'EOF' > ~/.ssh/config
-Host github.com-uikit
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/key1
-  IdentitiesOnly yes
-
-Host github.com-token
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/key2
-  IdentitiesOnly yes
+# Create a smart SSH wrapper script that inspects the git argument and routes the exact key
+cat << 'EOF' > ~/.ssh/smart-ssh.sh
+#!/usr/bin/env bash
+if [[ "$*" == *"jmo-ui-kit"* ]]; then
+  exec ssh -i ~/.ssh/key1 -o IdentitiesOnly=yes "$@"
+elif [[ "$*" == *"jmo-design-tokens"* ]]; then
+  exec ssh -i ~/.ssh/key2 -o IdentitiesOnly=yes "$@"
+else
+  exec ssh "$@"
+fi
 EOF
-chmod 600 ~/.ssh/config
+chmod +x ~/.ssh/smart-ssh.sh
 
-# Configure git to route each private repo to its dedicated SSH alias
-git config --global url."git@github.com-uikit:JMO-BIZHUB/jmo-ui-kit".insteadOf "ssh://git@github.com/JMO-BIZHUB/jmo-ui-kit"
-git config --global url."git@github.com-uikit:JMO-BIZHUB/jmo-ui-kit".insteadOf "git+ssh://git@github.com/JMO-BIZHUB/jmo-ui-kit"
-git config --global url."git@github.com-token:JMO-BIZHUB/jmo-design-tokens".insteadOf "ssh://git@github.com/JMO-BIZHUB/jmo-design-tokens"
-git config --global url."git@github.com-token:JMO-BIZHUB/jmo-design-tokens".insteadOf "git+ssh://git@github.com/JMO-BIZHUB/jmo-design-tokens"
+# Export GIT_SSH_COMMAND so Git forces the exact key for each repository
+export GIT_SSH_COMMAND="~/.ssh/smart-ssh.sh"
 
 # Install dependencies cleanly
 npm install
